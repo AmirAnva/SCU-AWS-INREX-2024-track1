@@ -53,17 +53,21 @@ def generate_random_coordinates():
 
 if __name__ == "__main__":
     load_dotenv()
+    # get token
     token = get_token()
+    # get coordinates
     corner1 = generate_random_coordinates()
     corner2 = generate_random_coordinates()
     print("corner1: ", corner1)
     print("corner2: ", corner2)
-    camera_list = get_cameras_in_a_box(get_token(), corner1, corner2)
+    # get camera list
+    camera_list = get_cameras_in_a_box(token, corner1, corner2)
     first_location = camera_list[0]
     print("First Camera id is: ",first_location["id"])
+    # turn image intp bytes
     image_b = get_byte_image.get_camera_image_in_bytes(first_location["id"], token)
 
-    # Put your AWS credentials in a .env file
+    # Get AWS credentials in a .env file
     access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
     secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 
@@ -77,8 +81,7 @@ if __name__ == "__main__":
     # The model ID for the model you want to use
     model_id = "us.anthropic.claude-3-sonnet-20240229-v1:0"
 
-    # The message you want to send to the model
-    # user_message = "How many traffic lights do you see? Describe the traffic in the image."
+    # system prompt: feel free to add variables you want
     system_prompt = ("Generate a JSON response with the following fields: "
                     "- Status: (integer) to represent an HTTP status code. "
                     "- Content: An object with fields: "
@@ -87,6 +90,7 @@ if __name__ == "__main__":
                     "- Weather: (string) to describe the weather condition. (NA for no information) "
                     "Ensure the response follows this format.")
 
+    # we can only choose either text or image to send in the content
     conversation = [
         {
             "role": "user",
