@@ -1,10 +1,8 @@
 import os
 from flask import Flask, jsonify,request
 import mysql.connector
-from mysql.connector import errorcode
 from math import radians, sin, cos, sqrt, atan2
 from dotenv import load_dotenv
-from service import send_email
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -20,24 +18,6 @@ def connect_db():
     }
     cnx = mysql.connector.connect(**db_config)
     return cnx
-
-@app.route('/')
-def index():
-    # connect mysql
-    load_dotenv()
-    cnx = connect_db()
-    cursor = cnx.cursor()
-
-    # sql query
-    query = "SELECT * FROM users"
-    cursor.execute(query)
-    users = [users for users in cursor]
-
-    # close the connection
-    cursor.close()
-    cnx.cursor()
-    return jsonify(users)
-
 
 def compute_radius(lat1, lon1, lat2, lon2):
     R = 6371
@@ -92,9 +72,25 @@ def send_notification_with_gmail(recipient_email):
     except Exception as e:
         print(f"Failed to send email: {str(e)}")
 
+@app.route('/')
+def select_all_users():
+    # connect mysql
+    load_dotenv()
+    cnx = connect_db()
+    cursor = cnx.cursor()
+
+    # sql query
+    query = "SELECT * FROM users"
+    cursor.execute(query)
+    users = [users for users in cursor]
+
+    # close the connection
+    cursor.close()
+    cnx.cursor()
+    return jsonify(users)
 
 @app.route('/find_users_within_radius', methods=['GET'])
-def find_users_within_radius():
+def find_users_within_radius_and_send_notification():
     try:
         # Get query parameters
         accident_lat = request.args.get('latitude', type=float)
@@ -135,10 +131,3 @@ def find_users_within_radius():
 if __name__ == '__main__':
     # app.debug = True
     app.run(host="0.0.0.0", port=3000, debug=True)
-
-    # accident_latitude = -33.968100
-    # accident_longitude = 18.582020
-    # users_in_radius = find_users_within_radius(accident_latitude, accident_longitude, radius=3)
-    # print("Users within 3 km radius:")
-    # for user in users_in_radius:
-    #     print(f"Username: {user['username']}, Email: {user['email']}")
