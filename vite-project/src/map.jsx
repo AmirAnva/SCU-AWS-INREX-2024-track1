@@ -48,10 +48,55 @@ function error() {
 //     }
 // ];
 
-function MyMap() {
+function GetData({ id }) {
+  const [img, setImg] = useState(null);
 
+  useEffect(() => {
+    if (id === 'Current Location') return;
+
+    axios({
+      method: "GET",
+      url: `http://172.31.146.192:8080/${id}`
+    })
+    .then((response) => {
+      const res = response.data;
+      setImg({
+        id: res.Id,
+        image: `data:image/jpeg;base64,${res.Image}`,
+        status: res.Status,
+        content: res.Content
+      });
+    }).catch((error) => {
+      console.error("Error fetching image data:", error);
+    });
+  }, [id]);
+
+  if (id === 'Current Location') {
+    return <p>This is your current location.</p>;
+  }
+
+  if (!img) {
+    return <p>Loading...</p>;
+  }
+
+  return (
+    <>
+      <p>ID: {img.id}</p>
+      {img.image && <img src={img.image} id="my-image" alt={`Camera ${img.id}`} style={{ width: "300px", height: "auto" }} />}
+      <p>Status: {img.status}</p>
+      <div>
+        <p>Congestion: {img.content.Congestion}</p>
+        <p>Car Accident: {img.content["Car Accident"]}</p>
+        <p>Weather: {img.content.Weather}</p>
+      </div>
+    </>
+  );
+}
+
+function MyMap() {
   const [markers, setMarkers] = useState([]);
   const [activeMarker, setActiveMarker] = useState(null);
+  const [mapInstance, setMapInstance] = useState(null);
 
   const seattleBounds = {
     north: 47.733670,
@@ -75,7 +120,7 @@ function MyMap() {
     axios({
       method: "GET",
       //http://172.31.146.192:8080/cameras?token=nx7BbllXcQ-yB6kA3*Gjr2RwxvWN5EzuIpBqRJcithI|&corner1=47.735404|-122.373787&corner2=47.501669|-122.244698
-      url: `http://172.31.146.192:8080/cameras?token=ASvsdsMljw*2ykS09RbE6tyBX7jpRhHro6YPRgNnVu0|&corner1=${LAT1}|${LONG1}&corner2=${LAT2}|${LONG2}`
+      url: `http://172.31.146.192:8080/cameras?token=7Lq7FC*PtQ01D9shw7nE9HuSsAIpxiqtOJqVIUDaE*4|&corner1=${LAT1}|${LONG1}&corner2=${LAT2}|${LONG2}`
     })
     .then((response) => {
       //console.log("Original Cameras:", response.data['cameras']);
@@ -122,12 +167,16 @@ function MyMap() {
   //       position: { lat: 47.644, lng: -122.3064 },
   //   }
   // ];
-  const handleActiveMarker = (marker) => {
+  const handleActiveMarker = (marker, position) => {
     console.log("Marker clicked:", marker);
     if (marker === activeMarker) {
       return;
     }
     setActiveMarker(marker);
+    if (mapInstance) {
+      mapInstance.panTo(position);
+      mapInstance.panBy(0, -200);
+    }
   };
 
   const { isLoaded } = useLoadScript({
@@ -137,7 +186,6 @@ function MyMap() {
   return (
     <Fragment>
       <div className="container">
-        <h1 className="text-center">Traffic Detection</h1>
         <div className="map-container" style={{ height: "90vh", width: "100%" }}>
           {isLoaded ? (
             <GoogleMap
@@ -152,17 +200,14 @@ function MyMap() {
                 <MarkerF
                   key={id}
                   position={position}
-                  onClick={() => handleActiveMarker(id)}
-                  // icon={{
-                  //   url:"https://t4.ftcdn.net/jpg/02/85/33/21/360_F_285332150_qyJdRevcRDaqVluZrUp8ee4H2KezU9CA.jpg",
-                  //   scaledSize: { width: 50, height: 50 }
-                  // }}
+                  onClick={() => handleActiveMarker(id, position)}
                 >
                   {activeMarker === id ? (
                     <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
                       <div>
                         <p> { name === 'current_location' ? `${id}` : `Camera ID: ${id}`}</p>
                         <p>Position: {JSON.stringify(position)}</p>
+                        <GetData id={id} />
                       </div>
                     </InfoWindowF>
                   ) : null}
