@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@react-google-maps/api": "^2.20.3"
+  },
+  "name": "scu-aws-inrex-2024-track1-5",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
