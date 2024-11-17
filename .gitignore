@@ -3,4 +3,3 @@ test/s3_test
 test/camera_api
 test/aws/__pycache__
 .env
-requirements.txt
