@@ -75,7 +75,7 @@ function MyMap() {
     axios({
       method: "GET",
       //http://172.31.146.192:8080/cameras?token=nx7BbllXcQ-yB6kA3*Gjr2RwxvWN5EzuIpBqRJcithI|&corner1=47.735404|-122.373787&corner2=47.501669|-122.244698
-      url: `http://172.31.146.192:8080/cameras?token=ShemiXri0hwtfymsd1iiEa*hFju1FiZ*UQtwwVcZ8*k|&corner1=${LAT1}|${LONG1}&corner2=${LAT2}|${LONG2}`
+      url: `http://172.31.146.192:8080/cameras?token=ASvsdsMljw*2ykS09RbE6tyBX7jpRhHro6YPRgNnVu0|&corner1=${LAT1}|${LONG1}&corner2=${LAT2}|${LONG2}`
     })
     .then((response) => {
       //console.log("Original Cameras:", response.data['cameras']);
