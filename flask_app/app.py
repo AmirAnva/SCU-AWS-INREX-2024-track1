@@ -1,22 +1,11 @@
 import os
-from flask import Flask, render_template, jsonify,request
+from flask import Flask, jsonify,request
 import mysql.connector
 from mysql.connector import errorcode
 from math import radians, sin, cos, sqrt, atan2
 from dotenv import load_dotenv
 
 app = Flask(__name__)
-try:
-    cnx = mysql.connector.connect(user='root', password='springboot', host='localhost', database='mytraffic')
-except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print("Something is wrong with your user name or password")
-    elif err.errno == errorcode.ER_BAD_DB_ERROR:
-        print("Database does not exist")
-    else:
-        print(err)
-else:
-    cnx.close()
 
 @app.route('/')
 def index():
