@@ -13,6 +13,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* THIS IS VERY IMPORTANT THE MAP WILL BREAK IF REMOVED*/
+.map-container {
+  color: black;
+  background-color: white;
+  
+}
+
+
 a {
   font-weight: 500;
   color: #646cff;

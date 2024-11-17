@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import './App.css'
 import MyMap from './map'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './Navbar';
 import axios from 'axios';
+
+const Home = () => <h2>Home Page</h2>;
+const Product = () => <h2>About Page</h2>;
+const Future = () => <h2>Services Page</h2>;
+const Scalablilty = () => <h2>Contact Page</h2>;
 
 function App() {
   const [id, setId] = useState(1)
-
   const [img, setImg] = useState(null)
-  
   const handleIdChange = (e) => {
     const val = e.target.value;
     const number = parseInt(val, 10) || 1;
@@ -55,6 +60,22 @@ function App() {
 
   return (
     <>
+    <Router>
+      <Navbar />
+      <div style={{ padding: '20px' }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/future" element={<Future />} />
+          <Route path="/scalablilty" element={<Scalablilty />} />
+        </Routes>
+      </div>
+    </Router>
+
+      
+      
+      <MyMap/>
+    
       <h1>Transportation Data</h1>
       <div className="card">
         <form onSubmit={(e) => {
@@ -69,22 +90,10 @@ function App() {
           Camera ID: {id}
         </p>
       </div>
-   
-        <MyMap />
-        <div>
-        {img && (
-          <div>
-            <p>ID: {img.id}</p>
-            {img.image && <img src={img.image} alt={`Camera ${img.id}`} style={{ width: "300px", height: "auto" }} />}
-            <p>Status: {img.status}</p>
-            <div>
-              <p>Congestion: {img.content.Congestion}</p>
-              <p>Car Accident: {img.content["Car Accident"]}</p>
-              <p>Weather: {img.content.Weather}</p>
-            </div>
-          </div>
-        )}
-        </div>
+
+
+      
+        
     </>
   )
 }
