@@ -5,9 +5,10 @@ from dotenv import load_dotenv
 import get_byte_image
 import random
 import json
+import base64
 
-def Chat(i):
-    load_dotenv()
+def Chat(id):
+    load_dotenv(override=True)
     #random_number = random.randint(1, 1500)
 
     # Put your AWS credentials in a .env file
@@ -15,7 +16,7 @@ def Chat(i):
     secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
     inrix_token = os.getenv("INRIX_TOKEN")
 
-    image_b = get_byte_image.get_camera_image_in_bytes(i, inrix_token)
+    image_b = get_byte_image.get_camera_image_in_bytes(id, inrix_token)
 
     client = boto3.client(
         service_name="bedrock-runtime",
@@ -86,10 +87,8 @@ def Chat(i):
 
         response_text = response["output"]["message"]["content"][0]["text"]
         data = json.loads(response_text)
-        result = { 'Camera ID': f'{i}', **data }
+        result = { 'Id': f'{id}', "Image": base64.b64encode(image_b).decode("utf-8"), **data}
         response_text = json.dumps(result)
-        return response_text, image_b
+        return response_text
     except (ClientError, Exception) as e:
-        #print(f"ERROR: {e}")
         return f"ERROR: {e}"
-
