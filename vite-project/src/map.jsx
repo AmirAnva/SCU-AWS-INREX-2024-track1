@@ -53,8 +53,18 @@ function MyMap() {
   const [markers, setMarkers] = useState([]);
   const [activeMarker, setActiveMarker] = useState(null);
 
-  const LAT = 47.69;
-  const LONG = -122.332486;
+  const seattleBounds = {
+    north: 47.733670,
+    south: 47.513842,
+    east: -122.287030,
+    west: -122.337352
+  };
+
+  // Generate random latitude
+  const LAT = Math.random() * (seattleBounds.north - seattleBounds.south) + seattleBounds.south;
+
+  // Generate random longitude
+  const LONG = Math.random() * (seattleBounds.east - seattleBounds.west) + seattleBounds.west;
   
   const LAT1 = 47.515578;
   const LONG1 = -122.332486;
@@ -74,8 +84,8 @@ function MyMap() {
       );
       console.log("FILTERED:",filteredCameras);
       const formattedMarkers = filteredCameras.map(camera => ({
-        id: 'Current Location',
-        name: `current_location`,
+        id: `${camera.id}`,
+        name: `Camera ID: ${camera.id}`,
         position: { lat: parseFloat(camera.latitude), lng: parseFloat(camera.longitude) }
       //setMarkers({ id: parseInt(filteredCameras[0].id), name: filteredCameras[0].id, position: { lat: parseFloat(filteredCameras[0].latitude), lng: parseFloat(filteredCameras[0].longitude)} });
       // setMarkers(filteredCameras.map((camera) => ({
@@ -88,8 +98,8 @@ function MyMap() {
     setMarkers(prevMarkers => [
       ...prevMarkers,
       {
-        id: prevMarkers.length, // Use the current length as the new ID
-        name: `Camera:${prevMarkers.length}`,
+        id: `Current Location`, // Use the current length as the new ID
+        name: `current_location`,
         position: { lat: LAT, lng: LONG }
       }
     ]);
