@@ -11,7 +11,7 @@ def get_camera_image_in_bytes(camera_id, token):
     response = requests.request("GET", url, headers=headers, data=payload)
 
     image = Image.open(BytesIO(response.content))
-    image.show()
+    # image.show()
     img_io = BytesIO()
     image.save(img_io, "JPEG")
     img_io.seek(0)
