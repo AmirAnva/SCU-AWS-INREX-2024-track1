@@ -33,3 +33,14 @@ VALUES
     ('test_user13', 'hashed_password13', 'test13@example.com', -34.603722, -58.381592), -- Buenos Aires, Argentina
     ('test_user14', 'hashed_password14', 'test14@example.com', 37.774929, -122.419418), -- San Francisco, USA
     ('test_user15', 'hashed_password15', 'test15@example.com', 59.329323, 18.068581); -- Stockholm, Sweden
+
+CREATE TABLE email_messages (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- Unique identifier for each email message
+    subject VARCHAR(255) NOT NULL,     -- Subject of the email
+    body TEXT NOT NULL                 -- Body of the email
+);
+
+INSERT INTO email_messages (subject, body)
+VALUES
+    ('Warnings!', 'Car accident in front! Pleas find alternatives way!'),
+    ('Be careful!', 'Heavy rainy blocking sites!');
