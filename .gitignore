@@ -1,7 +1,6 @@
 .env
-node_modules.DS_Store
+.env.*
 __pycache__/
-requirements.txt
 
 # Logs
 logs
@@ -28,5 +27,4 @@ dist-ssr
 *.sln
 *.sw?
 
-# idea
-.idea
+# keep IDE settings out of VCS

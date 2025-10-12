@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './Navbar';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 const Home = () => <h2>Home Page</h2>;
 const Product = () => <h2>About Page</h2>;
 const Future = () => <h2>Services Page</h2>;
@@ -25,7 +27,7 @@ function App() {
     axios({
       method: "GET",
       //url: `http://127.0.0.1:8080/?id=${id}`, // Explicitly define the URL
-      url: `http://172.31.146.192:8080/${id}`
+      url: `${API_BASE_URL}/${id}`
     })
     .then((response) => {
       const res =response.data

@@ -154,11 +154,13 @@ def get_token_route():
 # Example URL: localhost:3000/cameras?token=TOKEN&corner1=LAT|LONG&corner2=LAT|LONG
 @app.route("/cameras")
 def get_cameras_route():
-    token = request.args.get("token")
     corner1 = request.args.get("corner1")
     corner2 = request.args.get("corner2")
-    if not token or not corner1 or not corner2:
-        return jsonify({"error": "Token or geobox corners not found. Please provide."})
+    if not corner1 or not corner2:
+        return jsonify({"error": "Geobox corners not found. Please provide corner1 and corner2."}), 400
+
+    # Prefer env-provided token; fallback to on-demand fetcher
+    token = os.getenv("INRIX_TOKEN") or get_token()
     cameras = get_cameras_in_a_box(token, corner1, corner2)
     return jsonify({"cameras": cameras})
 

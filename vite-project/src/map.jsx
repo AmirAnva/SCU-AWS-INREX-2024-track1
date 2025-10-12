@@ -7,6 +7,9 @@ import {
 } from "@react-google-maps/api";
 import axios from 'axios';
 
+// Read config from Vite environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 //This function takes in latitude and longitude of two locations
 // and returns the distance between them as the crow flies (in meters)
 function calcCrow(coords1, coords2)
@@ -56,7 +59,7 @@ function GetData({ id }) {
 
     axios({
       method: "GET",
-      url: `http://172.31.146.192:8080/${id}`
+      url: `${API_BASE_URL}/${id}`
     })
     .then((response) => {
       const res = response.data;
@@ -119,39 +122,31 @@ function MyMap() {
   useEffect(() => {
     axios({
       method: "GET",
-      //http://172.31.146.192:8080/cameras?token=nx7BbllXcQ-yB6kA3*Gjr2RwxvWN5EzuIpBqRJcithI|&corner1=47.735404|-122.373787&corner2=47.501669|-122.244698
-      url: `http://172.31.146.192:8080/cameras?token=7Lq7FC*PtQ01D9shw7nE9HuSsAIpxiqtOJqVIUDaE*4|&corner1=${LAT1}|${LONG1}&corner2=${LAT2}|${LONG2}`
+      // Frontend no longer sends token; backend will handle INRIX token server-side
+      url: `${API_BASE_URL}/cameras?corner1=${LAT1}|${LONG1}&corner2=${LAT2}|${LONG2}`
     })
-    .then((response) => {
-      //console.log("Original Cameras:", response.data['cameras']);
-      const filteredCameras = response.data['cameras'].filter(obj => 
-      calcCrow({lat: LAT, lng: LONG}, {lat: obj.latitude, lng: obj.longitude}) <= 1609.34
-      );
-      console.log("FILTERED:",filteredCameras);
-      const formattedMarkers = filteredCameras.map(camera => ({
-        id: `${camera.id}`,
-        name: `Camera ID: ${camera.id}`,
-        position: { lat: parseFloat(camera.latitude), lng: parseFloat(camera.longitude) }
-      //setMarkers({ id: parseInt(filteredCameras[0].id), name: filteredCameras[0].id, position: { lat: parseFloat(filteredCameras[0].latitude), lng: parseFloat(filteredCameras[0].longitude)} });
-      // setMarkers(filteredCameras.map((camera) => ({
-      //   id: parseInt(camera.id),
-      //   name: camera.id,
-      //   position: { lat: parseFloat(camera.latitude), lng: parseFloat(camera.longitude) },
-      // })));
-    }));
-    setMarkers(formattedMarkers);
-    setMarkers(prevMarkers => [
-      ...prevMarkers,
-      {
-        id: `Current Location`, // Use the current length as the new ID
-        name: `current_location`,
-        position: { lat: LAT, lng: LONG }
-      }
-    ]);
-  })
-    .catch((error) => {
-      console.error("Error fetching camera data:", error);
-    });
+      .then((response) => {
+        const filteredCameras = response.data['cameras'].filter(obj =>
+          calcCrow({ lat: LAT, lng: LONG }, { lat: obj.latitude, lng: obj.longitude }) <= 1609.34
+        );
+        const formattedMarkers = filteredCameras.map(camera => ({
+          id: `${camera.id}`,
+          name: `Camera ID: ${camera.id}`,
+          position: { lat: parseFloat(camera.latitude), lng: parseFloat(camera.longitude) }
+        }));
+
+        setMarkers([
+          ...formattedMarkers,
+          {
+            id: `Current Location`,
+            name: `current_location`,
+            position: { lat: LAT, lng: LONG }
+          }
+        ]);
+      })
+      .catch((error) => {
+        console.error("Error fetching camera data:", error);
+      });
   }, []);
   console.log(`NEW ${markers}`);
   //markers = { id: markers[0].id, name: markers[0].id, position: { lat: markers[0].latitude, lng: markers[0].longitude } }
@@ -180,7 +175,7 @@ function MyMap() {
   };
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyA2UUt6zgte5HGgS3C6y-IpYNGJgqruafs",
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
   });
 
   return (
