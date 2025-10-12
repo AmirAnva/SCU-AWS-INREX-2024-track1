@@ -1,6 +1,9 @@
 from flask import Flask, Response, request, jsonify, render_template_string
 from flask_cors import CORS
 from bedrock import Chat
+from PIL import Image
+from io import BytesIO
+import base64
 import os
 import mysql.connector
 from math import radians, sin, cos, sqrt, atan2

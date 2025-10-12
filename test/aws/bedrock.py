@@ -79,7 +79,7 @@ def Chat(id):
         response = client.converse(
             modelId=model_id,
             messages=conversation,
-            inferenceConfig={"maxTokens": 512, "temperature": 0.5, "topP": 0.9},
+            inferenceConfig={"maxTokens": 512, "temperature": 0.4, "topP": 0.9},
             system=[{
                 'text':system_prompt
             }]

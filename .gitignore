@@ -1,8 +1,6 @@
-.idea
-test/s3_test
-test/camera_api
-test/aws/__pycache__
 .env
+node_modules.DS_Store
+__pycache__/
 requirements.txt
 
 # Logs
@@ -30,5 +28,5 @@ dist-ssr
 *.sln
 *.sw?
 
-# .DS_Store
-.DS_Store
+# idea
+.idea
